@@ -6,14 +6,15 @@
     <script src="mole_acre.js"></script>
     <script src="https://mixedreality.mozilla.org/ammo.js/builds/ammo.wasm.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script> 
-
+    <link href="./assets/hammer.png" rel="icon"/>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space hammer</title>
+    <title>Whack the Alien</title>
   </head>
   <body>
     <a-scene id="scene" physics="driver: ammo; debug: false; debugDrawMode: 1;">
+      <a-sound src="assets/theme.mp3" autoplay="true" loop="true" volume="0.5"></a-sound>
         <a-assets>
             <!--Models-->
             <a-asset-item id="mole-model" src="models/mole2.glb"></a-asset-item>
