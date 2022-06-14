@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.2.0/dist/aframe-environment-component.min.js"></script>
+    <script src="mole_acre.js"></script>
+    <script src="https://mixedreality.mozilla.org/ammo.js/builds/ammo.wasm.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script> 
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space hammer</title>
+  </head>
+  <body>
+    <a-scene id="scene" physics="driver: ammo; debug: false; debugDrawMode: 1;">
+        <a-assets>
+            <!--Models-->
+            <a-asset-item id="mole-model" src="models/mole2.glb"></a-asset-item>
+            <a-asset-item id="hammer-model" src="https://acodedoer.github.io/aframe-whack-a-mole/models/hammer-model.glb"></a-asset-item>
+            <a-asset-item id="controller-hammer-model" src="models/hammer.glb"></a-asset-item>
+            <!--Sound-->
+            <audio id="hit-sound" crossorigin="anonymous" src="https://acodedoer.github.io/aframe-whack-a-mole/sounds/impact.mp3" preload="auto"></audio>
+            <audio id="miss-sound" crossorigin="anonymous" src="sounds/miss.mp3" preload="auto"></audio> <!--from https://opengameart.org/content/collision-nutfall-yo-frankie-->
+            <audio id="shoot-sound" crossorigin="anonymous" src="sounds/hammerSound.mp3" preload="auto"></audio>
+            <!--Mole-->
+            <a-mixin id="mole" sound="src: #hit-sound; on: collidestart" scale="0.3 0.3 0.3" gltf-model="#mole-model" ammo-body="type:kinematic;emitCollisionEvents: true;collisionFilterGroup: 1; collisionFilterMask: 5;" ammo-shape="type:capsule; fit:manual; halfExtents: 0.13 0.115 0.13"></a-mixin>
+            
+            <!--Cursor Hammer-->
+            <a-mixin id="hammer" rotation="0 0 0" gltf-model="#hammer-model"></a-mixin>
+
+            <!--Controller hammer -->
+            <a-mixin id="controller-hammer"  gltf-model="#controller-hammer-model" sound="src: #shoot-sound; on: playHammerSound; volume:0.1"></a-mixin>
+            
+            <!--Flying hammer -->
+            <a-mixin id="flying-hammer"  ammo-body="type:kinematic;emitCollisionEvents:true" ammo-shape="type:box; fit:manual; halfExtents: 0.15 0.075 0.15"  gltf-model="#controller-hammer-model"></a-mixin>
+
+
+            <a-mixin id="control-countdown-animation" animation__countdown="property: position; to: 0 -0.24 0; dur:250;"></a-mixin>
+            <a-mixin id="control-allowRestart-animation" animation__restart="property: position; to: 0 0 0; dur: 500;"></a-mixin>
+            
+            <a-mixin id="hole-end-animation" animation="property: geometry.radius; to: 0.15; dur: 500; easing:	easeOutQuart;"></a-mixin>
+            <a-mixin id="hole-start-animation" animation="property: geometry.radius; to: 0.3; dur: 500; easing:	easeOutQuart;"></a-mixin>
+            
+            <a-mixin id="control-horizontal-bar" material="color:#3f3e3e" geometry="primitive:box; width:1; depth: 0.05; height: 0.05"></a-mixin> 
+            <a-mixin id="control-vertical-bar" material="color:#3f3e3e" geometry="primitive:box; width:0.05; depth: 1; height: 0.05"></a-mixin> 
+
+            <a-mixin id="mole-animation" animation="property: position; to: 0 0 0; dur: 1000; easing:	easeOutQuart; loop:1; dir: alternate"></a-mixin>        
+        
+             
+            
+            <!--Ribbon that makes up controller hammer handle-->
+            <a-mixin id="hammer-ribbon" geometry="primitive:cylinder; openEnded:true; radius:0.032; height:0.02" material="color:black;side: double" ></a-mixin>
+
+            <!--Ribbon animation to show the flying-hammer's direction of movement-->
+            <a-mixin id="ribbon-shot-animation" animation="property:position; to:0 0 0; loop:true; dur:500"></a-mixin>
+            <a-mixin id="ribbon-recall-animation" animation="property:position; to:0 -0.14 0; loop:true; dur:500"></a-mixin> 
+          </a-assets>
+        
+        
+        <a-sky src="assets/space.jpg" radius="40" repeat="6 4"></a-sky>
+        <!--Mole Acre billboard and highscore post-->
+        <a-entity id="mole-acre-billboard">
+            <a-entity scale="8 8 8" position="0 0.25  0.15" text="value: Mole Acre; align:center;"></a-entity>
+            <a-entity id="highscore-text" scale="4 4 4" position="0 -0.25  0.15" text="value: Highscore: 0; align:center;"></a-entity>
+        </a-entity>
+
+        <!--Main game area-->
+        <a-entity id='stage' mole-acre position="0 0 -2.2">
+          <a-entity control="gameDuration: short; popMultiple: true" id="control-entity" geometry="primitive:box; height:0.5; width:1; depth:1" class="clickable" position="0 0 0" material="color:#5a5a5a" ammo-body="type:kinematic; emitCollisionEvents:true;collisionFilterGroup: 1; collisionFilterMask: 5;" ammo-shape="type:box;" sound="src: #hit-sound; on: collidestart">
+            <a-entity id ="control-score" scale="4 4 4"  rotation="-90 0 0" position="0 0.25 -0.25" text="value:; align:center;"></a-entity>
+            <a-entity id ="control-instruction" scale="3.5 3.5 3.5"  rotation="-90 0 0" position="0 0.25 0.25" text="value: Hit to Play!; align:center;"></a-entity>
+            <a-entity mixin="control-vertical-bar" position="0.475 0.25 0"></a-entity>
+            <a-entity mixin="control-vertical-bar" position="-0.475 0.25 0"></a-entity>
+            <a-entity mixin="control-horizontal-bar" position="0 0.25 0.475" ></a-entity>
+            <a-entity mixin="control-horizontal-bar" position="0 0.25 -0.475"></a-entity>
+            <a-entity mixin="control-horizontal-bar" position="0 0.25 0"></a-entity>
+          </a-entity>
+        </a-entity>
+
+
+
+        <!--Camera to attach curso if the player is not using the above-->
+        <a-entity id="camera" camera position="0 1.6 0" wasd-controls look-controls="pointerLockEnabled:true"> 
+        </a-entity>
+
+        <!--Collidable floor-->
+        <a-plane color="ffffff" src="./assets/floor.png" sound="src: #miss-sound; on: collidestart" repeat="50 50" rotation ="-90 0 0" width="85" height="85" position="0 -0.1 0" depth="1" ammo-body="type:static; emitCollisionEvents:true;collisionFilterGroup: 2; collisionFilterMask: 6;" ammo-shape="type:box;"></a-plane>
+    </a-scene>
+  </body>
+</html>
