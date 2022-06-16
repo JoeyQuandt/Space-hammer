@@ -34,8 +34,8 @@ AFRAME.registerComponent('control', {
           this.cursor.setAttribute("hammer-logic","")
           this.cursor.setAttribute("id","cursor-entity")
           this.cursor.setAttribute("cursor","fuse: true; fuseTimeout: 500")
-          this.cursor.setAttribute("animation__click","property: rotation; startEvents: click; easing: easeInCubic; dur: 250; from: -45 0 0; to: 0 0 0")
-          this.cursor.setAttribute("animation__fusing","property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 0.1 0.1 0.1; to:0.15 0.15 0.15")
+          this.cursor.setAttribute("animation__click","property: rotation; startEvents: click; easing: easeInCubic; dur: 250; from: -90 0 0; to: 0 0 0")
+          this.cursor.setAttribute("animation__fusing","property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 0.1 0.1 0.1; to:0.20 0.20 0.20")
           this.cursor.setAttribute("animation__mouseleave","property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 250; to: 0.1 0.1 0.1")
           this.cursor.setAttribute("geometry","primitive: ring; radiusInner: 0.02; radiusOuter: 0.03")
           this.cursor.setAttribute("material","color: black; shader: flat")
@@ -195,13 +195,13 @@ AFRAME.registerComponent('control', {
             hole.object3D.position.z = 1 * i_;
             hole.setAttribute('radius', '0.15');
             hole.setAttribute('height', '0.01');
-            hole.setAttribute('material', 'color:#5a5a5a; shader:flat');
+            hole.setAttribute('material', 'color:#8B4513; shader:flat');
             hole.className="hole"
        
             const mole =  document.createElement('a-entity');
             mole.setAttribute('id', counter)
             mole.setAttribute('mixin', 'mole');
-            mole.object3D.position.y = -0.34
+            mole.object3D.position.y = -0.50
             mole.setAttribute('mole-logic', '')
             mole.className="mole"
             hole.appendChild(mole)
